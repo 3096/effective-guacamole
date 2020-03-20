@@ -6,7 +6,7 @@
 // hash matches to find the sections hashed in Animal Crossing: New Horizon
 // save files.
 
-#include "MurmurHash3.h"
+#include "MurmurHash3FindMatch.h"
 #include <stdexcept>
 
 //-----------------------------------------------------------------------------

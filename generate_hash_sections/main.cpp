@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "MurmurHash3.h"
+#include "MurmurHash3FindMatch.h"
 
 struct MurmurHashSection {
     long hashOffset;
