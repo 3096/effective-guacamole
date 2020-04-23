@@ -32,7 +32,7 @@ std::array<uint8_t, 0x10> getKeyOrIV(std::unique_ptr<uint32_t[]>& headerCryptSec
 void aes_crypt_ctr(uint8_t* in_buf, std::array<uint8_t, 0x10> key, std::array<uint8_t, 0x10> iv, size_t len,
                    uint8_t* out_buf) {
 #ifdef __SWITCH__
-#    warning "I have not tested this, please test to make sure this works"
+#    warning "I have not tested the aes128CtrCrypt from libnx. Please be sure to test if it works the same way"
     Aes128CtrContext ctx;
     aes128CtrContextCreate(&ctx, key.data(), iv.data());
     aes128CtrCrypt(&ctx, out_buf, in_buf, len);
@@ -101,6 +101,54 @@ const std::unordered_map<std::string, std::list<MurmurHashSection>> FILENAME_HAS
         }
     },
 };
+const std::unordered_map<std::string, std::list<MurmurHashSection>> FILENAME_HASHSECTIONS_MAP_V120 = {
+    // map content automatically generated with: 
+    // https://github.com/3096/effective-guacamole/blob/master/generate_hash_sections/main.cpp
+    {
+        "postbox", {
+            {0x100, 0xb4448c},
+        }
+    },
+    {
+        "main", {
+            {0x110, 0x1d6d5c},
+            {0x1d6e70, 0x323ebc},
+            {0x4fae40, 0x35d2c},
+            {0x530b70, 0x3787c},
+            {0x568500, 0x35d2c},
+            {0x59e230, 0x3787c},
+            {0x5d5bc0, 0x35d2c},
+            {0x60b8f0, 0x3787c},
+            {0x643280, 0x35d2c},
+            {0x678fb0, 0x3787c},
+            {0x6b0940, 0x35d2c},
+            {0x6e6670, 0x3787c},
+            {0x71e000, 0x35d2c},
+            {0x753d30, 0x3787c},
+            {0x78b6c0, 0x35d2c},
+            {0x7c13f0, 0x3787c},
+            {0x7f8d80, 0x35d2c},
+            {0x82eab0, 0x3787c},
+            {0x866330, 0x26899c},
+        }
+    },
+    {
+        "profile", {
+            {0x100, 0x6945c},
+        }
+    },
+    {
+        "photo_studio_island", {
+            {0x100, 0x2c8bc},
+        }
+    },
+    {
+        "personal", {
+            {0x110, 0x35d2c},
+            {0x35e40, 0x3787c},
+        }
+    },
+};
 // clang-format on
 
 void processPath(std::string basePath) {
@@ -133,7 +181,7 @@ void processPath(std::string basePath) {
         std::cout << "Could not open header " << headerPath << std::endl;
         return;
     }
-    long headerCryptSectionSize = headerFileIS.tellg() - HEADER_INFO_SECTION_SIZE;
+    long headerCryptSectionSize = static_cast<long>(headerFileIS.tellg()) - HEADER_INFO_SECTION_SIZE;
     auto headerCryptSectionBuffer = std::make_unique<uint32_t[]>(headerCryptSectionSize / sizeof(uint32_t));
 
     // read header crypt section
@@ -157,7 +205,7 @@ void processPath(std::string basePath) {
         std::string filename = basePath.substr(filenameStartPos, filenameEndPos - filenameStartPos);
 
         // go through hash sections list and calculate each one
-        auto filenameHashsectionsMap = FILENAME_HASHSECTIONS_MAP_V110;  // TODO: detect version using header
+        auto filenameHashsectionsMap = FILENAME_HASHSECTIONS_MAP_V120;  // TODO: detect version using header
         for (MurmurHashSection hashSection : filenameHashsectionsMap[filename]) {
             uint32_t calcedHash;
             MurmurHash3_x86_32(&baseFileBuffer[hashSection.hashOffset + 4], hashSection.sectionLen, 0, &calcedHash);

@@ -48,8 +48,8 @@ void processPath(std::string basePath) {
             if (((curHash & 0xFF) > 0) + ((curHash & 0xFF00) > 0) + ((curHash & 0xFF0000) > 0) +
                     ((curHash & 0xFF000000) > 0) >
                 2) {  // assmuse if at least 2 bytes aren't 0, it's a hash? So far it worked ¯\_(ツ)_/¯
-                std::cout << "    hash search skipped 0x" << std::hex << curHashOffset - curOffset << " bytes"
-                          << std::endl;
+                std::cout << "    hash search skipped 0x" << std::hex << curHashOffset - curOffset
+                          << " bytes\thash is at: 0x" << curHashOffset << "\t";
                 break;
             }
             curHashOffset += 4;
@@ -61,6 +61,8 @@ void processPath(std::string basePath) {
         hashSectionList.push_back({curHashOffset, curSectionSize});
 
         curOffset += curSectionSize;
+        // std::cout << "match found with len 0x" << curSectionSize << "\t curOffset is at 0x" << curOffset
+        //           << std::endl;
     }
 
     // add current list to map
