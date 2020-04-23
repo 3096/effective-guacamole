@@ -1,5 +1,5 @@
 # effective-guacamole
-PoC save decryption and re-signing for Animal Crossing: New Horizon. Last updated for 1.1.0
+PoC save decryption and re-signing for Animal Crossing: New Horizon. Last updated for 1.2.0
 
 This PoC includes 2 programs:
 - save_cryptor
